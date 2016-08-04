@@ -1,0 +1,290 @@
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+<meta http-equiv="pragma" content="no-cache" />
+
+<!doctype html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+  <head>
+    <title>(ARCOS) SimEdit</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-resource.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
+
+    <link rel="stylesheet" href="wepsim_edit.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+    <script src="sim_board.js"></script>
+    <script src="sim_cpu.js"></script>
+    <script src="sim_mem.js"></script>
+    <script src="sim_io.js"></script>
+
+    <script>
+	 var app = angular.module('simeditApp', ['ui.bootstrap']);
+
+	 app.directive('jsonizer', function() {
+
+	  return {
+	    restrict: 'A',
+	    require: 'ngModel',
+	    link: function (scope, element, attrs, ngModel) {
+	      
+	      //format text going to user (model to view)
+	      ngModel.$formatters.push(function(value) {
+		  return JSON.stringify(value);
+	      });
+	      
+	      //format text from the user (view to model)
+	      ngModel.$parsers.push(function(value) {
+		  return JSON.parse(value);
+	      });
+	    }
+	  }
+
+	 });
+
+	 app.controller('simeditController', function() {
+
+		 var sim = this;
+		 sim.states  = sim_states ;
+		 sim.signals = sim_signals ;
+
+		 sim.update_state = function (elto) 
+		 {
+		    sim.states[elto.name] = { name:elto.name, 
+				   	      nbits:elto.nbits, 
+					      value:elto.value, 
+					      default_value:elto.default_value, 
+					      draw_data:elto.draw_data };
+		 };
+
+		 sim.delete_state = function (elto) 
+		 {
+		    delete sim.states[elto.name];
+		 };
+
+		 sim.insert_state = function (elto) 
+		 {
+		    sim.states[elto.name] = { name:elto.name, 
+					      nbits:elto.nbits, 
+					      value:elto.value, 
+					      default_value:elto.default_value, 
+					      draw_data:elto.draw_data };
+		 };
+
+		 sim.update_signal = function (elto) 
+		 {
+		    sim.signals[elto.name] = { name:elto.name, 
+			 		       type:elto.type, 
+					       value:elto.value, 
+					       default_value:elto.default_value, 
+			 		       nbits:elto.nbits, 
+			 		       behavior:elto.behavior, 
+			 		       fire_name:elto.fire_name, 
+			 		       draw_data:elto.draw_data, 
+					       draw_name:elto.draw_name };
+		 };
+
+		 sim.delete_signal = function (elto) 
+		 {
+		    delete sim.signals[elto.name];
+		 };
+
+		 sim.insert_signal = function (elto) 
+		 {
+		    sim.signals[elto.name] = { name:elto.name, 
+			 		       type:elto.type, 
+					       value:elto.value, 
+					       default_value:elto.default_value, 
+			 		       nbits:elto.nbits, 
+			 		       behavior:elto.behavior, 
+			 		       fire_name:elto.fire_name, 
+			 		       draw_data:elto.draw_data, 
+					       draw_name:elto.draw_name };
+		 };
+
+	      });
+    </script>
+
+  </head>
+
+
+  <body ng-app="simeditApp">
+
+    <tabset>
+      <tab active="true"  disable="false">
+        <tab-heading>
+          <span>Estados</span> 
+        </tab-heading>
+        <h1>
+        <div class="container-fluid" ng-controller="simeditController as sim">
+                <table class="table table-striped table-condensed">
+                        <thead>
+                        <tr>
+                            <th style="width: 15%;">Name</th>
+                            <th style="width: 15%;"># bits</th>
+                            <th style="width: 15%;">value</th>
+                            <th style="width: 15%;">default value</th>
+                            <th style="width: 15%;">draw data</th>
+                            <th style="width:  5%;">&nbsp;</th>
+                            <th style="width: 10%;">&nbsp;</th>
+                            <th style="width: 10%;">&nbsp;</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr ng-repeat="sim_state in sim.states">
+                            <td ng-show="sim_state.length" colspan=1>
+                                <input          type="text" size="15"                                     value='"BR"'> 
+                            </td>
+                            <td ng-show="sim_state.length" colspan=1>
+                                <input          type="text" size="15"                                     value='"32"'> 
+                            </td>
+                            <td ng-show="sim_state.length" colspan=3>
+                                <input jsonizer type="text" size="55" ng-model="sim_state"                placeholder="value"> 
+                            </td>
+
+                            <td ng-show="sim_state.name"> 
+                                <input jsonizer type="text" size="15" ng-model="sim_state.name"           placeholder="name"> 
+                            </td>
+                            <td ng-show="sim_state.name"> 
+                                <input jsonizer type="text" size="15" ng-model="sim_state.nbits"          placeholder="nbits"> 
+                            </td>
+                            <td ng-show="sim_state.name"> 
+                                <input jsonizer type="text" size="15" ng-model="sim_state.value"          placeholder="value"> 
+                            </td>
+                            <td ng-show="sim_state.name"> 
+                                <input jsonizer type="text" size="15" ng-model="sim_state.default_value"  placeholder="default_value"> 
+                            </td>
+                            <td ng-show="sim_state.name"> 
+                                <input jsonizer type="text" size="15" ng-model="sim_state.draw_data"      placeholder="draw_data"> 
+                            </td>
+
+                            <td> &nbsp;</td>
+                            <td><a ng-click="sim.update_state(sim_state)" class="btn btn-small btn-primary">update</a></td>
+                            <td><a ng-click="sim.delete_state(sim_state)" class="btn btn-small btn-danger">delete</a></td>
+                        </tr>
+
+                        <tr>
+                        <form>
+                            <td> <input type="text" size="15" ng-model="sim_state.name"           placeholder="name"> </td>
+                            <td> <input type="text" size="15" ng-model="sim_state.nbits"          placeholder="nbits"> </td>
+                            <td> <input type="text" size="15" ng-model="sim_state.value"          placeholder="value"> </td>
+                            <td> <input type="text" size="15" ng-model="sim_state.default_value"  placeholder="default_value"> </td>
+                            <td> <input type="text" size="15" ng-model="sim_state.draw_data"      placeholder="draw_data"> </td>
+
+                            <td>&nbsp;</td>
+                            <td> <a ng-click="sim.insert_state(sim_state)" class="btn btn-small btn-primary">add</a> </td>
+                            <td>&nbsp;</td>
+                        </form>
+                        </tr>
+                        </tbody>
+                </table>
+        </div>
+        </h1>
+      </tab>
+      <tab active="false" disable="false">
+        <tab-heading>
+          <span>Se&nacute;ales</span> 
+        </tab-heading>
+        <h1>
+        <div class="container-fluid" ng-controller="simeditController as sim">
+                <table class="table table-striped table-condensed">
+                        <thead>
+                        <tr>
+                            <th style="width: 10%;">Name</th>
+                            <th style="width:  5%;">Type</th>
+                            <th style="width: 10%;">Value</th>
+                            <th style="width: 10%;">Default value</th>
+                            <th style="width:  5%;"># bits</th>
+                            <th style="width: 10%;">behavior</th>
+                            <th style="width: 10%;">Fire name</th>
+                            <th style="width: 10%;">Draw data</th>
+                            <th style="width: 10%;">Draw name</th>
+                            <th style="width:  5%;">&nbsp;</th>
+                            <th style="width:  5%;">&nbsp;</th>
+                            <th style="width:  5%;">&nbsp;</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr ng-repeat="sim_signals in sim.signals">
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.name"          placeholder="name"> </td>
+                            <td> 
+				<select ng-model="sim_signals.type" >
+				  <option ng-show="sim_signals.type != 'L'" value="L">L</option>
+				  <option ng-show="sim_signals.type == 'L'" value="L" selected="selected">L</option>
+				  <option ng-show="sim_signals.type != 'E'" value="E">E</option>
+				  <option ng-show="sim_signals.type == 'E'" value="E" selected="selected">E</option>
+				</select>
+                            </td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.value"         placeholder="value"> </td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.default_value" placeholder="default_value"></td>
+                            <td> <input jsonizer type="text" size="5"  ng-model="sim_signals.nbits"         placeholder="nbits"> </td>
+			    <td>
+			    <span ng-repeat="be in sim_signals.behavior track by $index">
+                                <input jsonizer type="text" size="15" ng-model="sim_signals.behavior[$index]"  placeholder="behavior">
+			    </span>
+			    </td>
+			    <td>
+			    <span ng-repeat="be in sim_signals.fire_name track by $index">
+                                <input jsonizer type="text" size="15" ng-model="sim_signals.fire_name[$index]"  placeholder="fire_name">
+			    </span>
+			    </td>
+			    <td>
+			    <span ng-repeat="be in sim_signals.draw_data track by $index">
+                                <input jsonizer type="text" size="15" ng-model="sim_signals.draw_data[$index]"  placeholder="draw_data">
+			    </span>
+			    </td>
+			    <td>
+			    <span ng-repeat="be in sim_signals.draw_name track by $index">
+                                <input jsonizer type="text" size="15" ng-model="sim_signals.draw_name[$index]"  placeholder="draw_name">
+			    </span>
+			    </td>
+
+                            <td> &nbsp;</td>
+                            <td><a ng-click="sim.update_signal(sim_signals)" class="btn btn-small btn-primary">update</a></td>
+                            <td><a ng-click="sim.delete_signal(sim_signals)" class="btn btn-small btn-danger">delete</a></td>
+                        </tr>
+
+                        <tr>
+                        <form>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.name"          placeholder="name"> </td>
+                            <td> <input jsonizer type="text" size="5"  ng-model="sim_signals.type"          placeholder="type"> </td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.value"         placeholder="value"> </td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.default_value" placeholder="default_value"></td>
+                            <td> <input jsonizer type="text" size="5"  ng-model="sim_signals.nbits"         placeholder="nbits"> </td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.behavior"      placeholder="behavior"> </td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.fire_name"     placeholder="fire_name"> </td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.draw_data"     placeholder="draw_data"> </td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.draw_name"     placeholder="draw_name"> </td>
+
+                            <td>&nbsp;</td>
+                            <td> <a ng-click="sim.insert_signal(sim_signals)" class="btn btn-small btn-primary">add</a> </td>
+                            <td>&nbsp;</td>
+                        </form>
+                        </tr>
+                        </tbody>
+                </table>
+        </div>
+        </h1>
+      </tab>
+    </tabset>
+
+  </body>
+
