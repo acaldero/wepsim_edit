@@ -43,12 +43,18 @@
 	      
 	      //format text going to user (model to view)
 	      ngModel.$formatters.push(function(value) {
-		  return JSON.stringify(value);
+                  var v = "" ;
+		  try       { v = JSON.parse(value); }
+                  catch (e) { }
+		  return v ;
 	      });
 	      
 	      //format text from the user (view to model)
 	      ngModel.$parsers.push(function(value) {
-		  return JSON.parse(value);
+                  var v = "" ;
+		  try       { v = JSON.parse(value); }
+                  catch (e) { }
+		  return v ;
 	      });
 	    }
 	  }
@@ -166,10 +172,10 @@
                                 <input jsonizer type="text" size="15" ng-model="sim_state.value"          placeholder="value"> 
                             </td>
                             <td ng-show="sim_state.name"> 
-                                <input jsonizer type="text" size="15" ng-model="sim_state.default_value"  placeholder="default_value"> 
+                                <input jsonizer type="text" size="15" ng-model="sim_state.default_value"  placeholder="default value"> 
                             </td>
                             <td ng-show="sim_state.name"> 
-                                <input jsonizer type="text" size="15" ng-model="sim_state.draw_data"      placeholder="draw_data"> 
+                                <input jsonizer type="text" size="15" ng-model="sim_state.draw_data"      placeholder="draw data"> 
                             </td>
 
                             <td> &nbsp;</td>
@@ -182,8 +188,8 @@
                             <td> <input type="text" size="15" ng-model="sim_state.name"           placeholder="name"> </td>
                             <td> <input type="text" size="15" ng-model="sim_state.nbits"          placeholder="nbits"> </td>
                             <td> <input type="text" size="15" ng-model="sim_state.value"          placeholder="value"> </td>
-                            <td> <input type="text" size="15" ng-model="sim_state.default_value"  placeholder="default_value"> </td>
-                            <td> <input type="text" size="15" ng-model="sim_state.draw_data"      placeholder="draw_data"> </td>
+                            <td> <input type="text" size="15" ng-model="sim_state.default_value"  placeholder="default value"> </td>
+                            <td> <input type="text" size="15" ng-model="sim_state.draw_data"      placeholder="draw data"> </td>
 
                             <td>&nbsp;</td>
                             <td> <a ng-click="sim.insert_state(sim_state)" class="btn btn-small btn-primary">add</a> </td>
@@ -231,7 +237,7 @@
 				</select>
                             </td>
                             <td> <input jsonizer type="text" size="15" ng-model="sim_signals.value"         placeholder="value"> </td>
-                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.default_value" placeholder="default_value"></td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.default_value" placeholder="default value"></td>
                             <td> <input jsonizer type="text" size="5"  ng-model="sim_signals.nbits"         placeholder="nbits"> </td>
 			    <td>
 			    <span ng-repeat="be in sim_signals.behavior track by $index">
@@ -240,17 +246,17 @@
 			    </td>
 			    <td>
 			    <span ng-repeat="be in sim_signals.fire_name track by $index">
-                                <input jsonizer type="text" size="15" ng-model="sim_signals.fire_name[$index]"  placeholder="fire_name">
+                                <input jsonizer type="text" size="15" ng-model="sim_signals.fire_name[$index]"  placeholder="fire name">
 			    </span>
 			    </td>
 			    <td>
 			    <span ng-repeat="be in sim_signals.draw_data track by $index">
-                                <input jsonizer type="text" size="15" ng-model="sim_signals.draw_data[$index]"  placeholder="draw_data">
+                                <input jsonizer type="text" size="15" ng-model="sim_signals.draw_data[$index]"  placeholder="draw data">
 			    </span>
 			    </td>
 			    <td>
 			    <span ng-repeat="be in sim_signals.draw_name track by $index">
-                                <input jsonizer type="text" size="15" ng-model="sim_signals.draw_name[$index]"  placeholder="draw_name">
+                                <input jsonizer type="text" size="15" ng-model="sim_signals.draw_name[$index]"  placeholder="draw name">
 			    </span>
 			    </td>
 
@@ -264,12 +270,12 @@
                             <td> <input jsonizer type="text" size="15" ng-model="sim_signals.name"          placeholder="name"> </td>
                             <td> <input jsonizer type="text" size="5"  ng-model="sim_signals.type"          placeholder="type"> </td>
                             <td> <input jsonizer type="text" size="15" ng-model="sim_signals.value"         placeholder="value"> </td>
-                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.default_value" placeholder="default_value"></td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.default_value" placeholder="default value"></td>
                             <td> <input jsonizer type="text" size="5"  ng-model="sim_signals.nbits"         placeholder="nbits"> </td>
                             <td> <input jsonizer type="text" size="15" ng-model="sim_signals.behavior"      placeholder="behavior"> </td>
-                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.fire_name"     placeholder="fire_name"> </td>
-                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.draw_data"     placeholder="draw_data"> </td>
-                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.draw_name"     placeholder="draw_name"> </td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.fire_name"     placeholder="fire name"> </td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.draw_data"     placeholder="draw data"> </td>
+                            <td> <input jsonizer type="text" size="15" ng-model="sim_signals.draw_name"     placeholder="draw name"> </td>
 
                             <td>&nbsp;</td>
                             <td> <a ng-click="sim.insert_signal(sim_signals)" class="btn btn-small btn-primary">add</a> </td>
