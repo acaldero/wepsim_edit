@@ -48,10 +48,7 @@
 	      
 	      //format text from the user (view to model)
 	      ngModel.$parsers.push(function(value) {
-                  var v = "" ;
-		  try       { v = JSON.parse(value) ; }
-                  catch (e) { }
-		  return v ;
+		  return JSON.parse(value) ;
 	      });
 	    }
 	  }
